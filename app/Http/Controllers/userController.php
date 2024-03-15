@@ -43,7 +43,7 @@ class UserController extends Controller
 
         return response()->json($users[$userIndex]);
     }
-    
+
 
     // Phương thức để lấy người dùng theo tên
     public function showByName($userName)
@@ -67,6 +67,8 @@ class UserController extends Controller
 
         return response()->json(['error' => 'User not found'], 404);
     }
+
+    // Phương thức để lấy bài viết của người dùng theo index
     public function getPostByIndex($userIndex, $postIndex)
     {
         $users = [
@@ -89,4 +91,33 @@ class UserController extends Controller
         return response()->json($users[$userIndex]['posts'][$postIndex]);
     }
 
+    // Phương thức để lấy bài viết của người dùng theo tên
+    public function getPostByName($userName, $postIndex)
+    {
+        $users = [
+            [
+                'name' => 'rady',
+                'posts' => ['Hello !', 'Good bye !'],
+            ],
+            [
+                'name' => 'him',
+                'posts' => ['How are you ?', 'I love mangos !'],
+            ],
+        ];
+        // Tìm kiếm người dùng trong mảng $users bằng tên
+        $user = collect($this->$users)->firstWhere('name', $userName);
+
+        // Kiểm tra xem người dùng có tồn tại không
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
+
+        // Kiểm tra xem chỉ số bài viết có hợp lệ không
+        if (!isset($user['posts'][$postIndex])) {
+            return response()->json(['error' => 'Post not found'], 404);
+        }
+
+        // Trả về bài viết
+        return response()->json(['post' => $user['posts'][$postIndex]]);
+    }
 }
